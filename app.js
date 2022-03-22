@@ -1,139 +1,172 @@
-//business interface logic
-function Pizza(size,crust,toppings,total){
-    this.size=size;
-    this.crust=crust;
-    this.toppings=toppings;
-    this.total=total;
-}
-    var pizzaTotal = priceSize + priceCrust + priceTopping;
-    
-var pricesize, pricecrust,pricetoppings;
- 
-
-   
-
-
- var price = function(pizzaSize, pizzaCrust, pizzaTopping) {
-     switch (pizzaSize) {
-        case "":
-            priceSize = 0;
-            break;
-        case "large":
-           priceSize = 1000;
-           break;
-         case "medium":
-             priceSize = 750;
-           break;
-        case "small":
-          priceSize = 500;
-          break;
-       default:
-           location.reload();
-           alert("Please select a pizza size");
-    };
-
-    switch (pizzaCrust) {
-        case "":
-           priceCrust = 0;
-           break;
-        case "crispy":
-            priceCrust = 100;
-            break;
-         case "stuffed":
-             priceCrust = 200;
-            break;
-       case "gluten free":
-            priceCrust = 150;
-            break;
-        default:
-        location.reload();
-           alert("Please choose a crust");
-    };
-
-    if (pizzaSize == 'large') {
-        priceTopping = pizzaTopping.length * 150;
-     } else if (pizzaSize == 'medium') {
-         priceTopping = pizzaTopping.length * 100;
-   } else if (pizzaSize == 'small') {
-        priceTopping = pizzaTopping.length * 50;
-   }
-   var pizzaTotal = priceSize + priceCrust + priceTopping;
-   return pizzaTotal;
-
+// order constructor -backend
+function pizzaOrder(size, crust, toppings, total) {
+    this.size = size;
+    this.crust = crust;
+    this.toppings = toppings;
+    this.total = total;
   }
-
-
-// user interface logic
-$(document).ready(function() {    
-    $("button#orderPizza").click(function() {
-        $(".view-two").toggle();
-        $(".view-one").toggle();
-    })
-
-    //Continue button
-    $("form#form1").submit(function(event) {
-        event.preventDefault()
-        
-        
-        $(".view-three").show();
-        $(".view-two").hide();
-        $(".view-four").hide();
-        $("#continue1").hide();
-        $(".checkbox").hide();
-
-       
-        //get form values
-        let pizzaSize = $(".size option:selected").val();
-        let pizzaCrust = $(".crust option:selected").val();
-        let pizzaTopping = $(".toppings option:selected").val();
-        
-
-        var total = pizzaTotal;
-        var grandTotal = total + 200;
-        var newPizza = new Pizza(pizzaSize, pizzaCrust, pizzaTopping,total)
-          var newRow='<tr><td>' +newPizza.size+'</td><td> id="size"' +newPizza.crust+'</td><td>id="cust"'+newPizza.toppings+'</td><td> id="toppings"'+newPizza.total+'</td></tr> id="total"'
-          $(".confirm-order").append(newRow); 
-        $(".current-order").append('<tr><td id="name">' + order.pizza + '</td><td id="size">' + order.size + '</td><td id="crust">' + order.crust + '</td><td id="toppings">' + order.toppings + '</td><td id="total">' + total);
-    })
-         //Pickup button
-         $("#pick-up").click(function() {
-            alert("Dear customer, your order will be ready for pickup in 1 hour. Your order total is: " + total);
-
-            //refresh page
-            location.reload();
-        })
-
-        //Checkout button
-        $("#checkout").click(function() {
-            //form data
-            var clientName = $("#full-name").val();
-            var clientNumber = $("#phone-number").val();
-            var clientLocation = $("#location").val();
-
-            if (clientName === "" || clientNumber === "" || clientLocation === "") {
-                alert("Please fill in the delivery form. All fields are required")
-            } else {
-                alert("Dear " + clientName + " your order will be delivered to " + clientLocation + " within the hour! Your order total is: " +
-                grandTotal + " Our rider will call you on arrival");
-        }
+  var grandTotal = 0;
+  var deliver = 200;
+  
+  $(document).ready(function () {
+    // hide table
+    $(".order-table").hide();
+    $("#amount").hide();
+    // $(".order-again").hide()
     
+  
+$("#user-order").submit(function(e){
+    e.preventDefault()
 })
 
 
-//Add another pizza
-$("#add").click(function(event) {
-    event.preventDefault();
+    $("button#place-order").click(function (event) {
+      //prevent default action
+      event.preventDefault();
+  
+      // // show table after clicking place order
+      $(".order-table").show();
+      $("button#place").hide();
+      $("button#order-again").hide();
+      $("button#restart").show();
+  
+      var selectedPizzaSize = $("#pizza-size option:selected").val();
+      var sizeName = $("#pizza-size option:selected").text();
+  
+      var selectedPizzaCrust = $("#pizza-crust option:selected").val();
+      var crustName = $("#pizza-crust option:selected").text();
+  
+      var selectedPizzaTopping = $("#pizza-topping option:selected").val();
+      var topName = $("#pizza-topping option:selected").text();
+  
+      var total =
+        parseInt(selectedPizzaSize) +
+        parseInt(selectedPizzaCrust) +
+        parseInt(selectedPizzaTopping);
+  
+      grandTotal = grandTotal + total;
+  
+      // $("order-table").show()
+  
+      var newPizzaOrder = new pizzaOrder(
+        selectedPizzaSize,
+        selectedPizzaCrust,
+        selectedPizzaTopping,
+        total
+      );
+  
+      // insert new row
+      var newRow =
+        "<tr><td>" +
+        sizeName +
+        " " +
+        newPizzaOrder.size +
+        "</td><td>" +
+        crustName +
+        " " +
+        newPizzaOrder.crust +
+        "</td><td>" +
+        topName +
+        " " +
+        newPizzaOrder.toppings +
+        "</td><td>" +
+        newPizzaOrder.total +
+        "</td></tr>";
+  
+      $("#pizzatable").append(newRow);
+    });
+  
+    $("button#add-order").click(function () {
+      var selectedPizzaSize = $("#pizza-size option:selected").val();
+      var sizeName = $("#pizza-size option:selected").text();
+  
+      var selectedPizzaCrust = $("#pizza-crust option:selected").val();
+      var crustName = $("#pizza-crust option:selected").text();
+  
+      var selectedPizzaTopping = $("#pizza-topping option:selected").val();
+      var topName = $("#pizza-topping option:selected").text();
+  
+      var total =
+        parseInt(selectedPizzaSize) +
+        parseInt(selectedPizzaCrust) +
+        parseInt(selectedPizzaTopping);
+      grandTotal = grandTotal + total;
+   console.log(total);
+   console.log(selectedPizzaTopping);
+      // $("order-table").show()
+  
+      var newPizzaOrder = new pizzaOrder(
+        selectedPizzaSize,
+        selectedPizzaCrust,
+        selectedPizzaTopping,
+        total
+      );
+  
+      // insert new row
+      var newRow =
+        "<tr><td>" +
+        sizeName +
+        " " +
+        newPizzaOrder.size +
+        "</td><td>" +
+        crustName +
+        " " +
+        newPizzaOrder.crust +
+        "</td><td>" +
+        topName +
+        " " +
+        newPizzaOrder.toppings +
+        "</td><td>" +
+        newPizzaOrder.total +
+        "</td></tr>";
+  
+      $("#pizzatable").append(newRow);
+    });
+  
+    $("button#finish-order").click(function () {
+      $("#amount").show();
+      $("button#order-again").hide();
+      $(".pizzatable").hide();
+      $("button#place").hide();
+      $("button#add-order").hide();
+      $("button#finish-order").hide();
+      $("#dtotal").show();
+      $("#totalamount").hide();
+      $("form#location").hide();
+      $("#pay").show();
+      $("button#restart").show();
+  
+      $(".grand-total").text(grandTotal);
+    });
+  
+    $("#delivery").click(function () {
+      $("#totalamount").hide();
+      $("form#location").show();
+      $("#delivery").hide();
+      $("#deliveryHelp").hide();
+      $("#pay").hide();
+      $("#dtotal").hide();
+    });
+  
+    $("form#location").submit(function (event) {
+      //prevent default action
+      event.preventDefault();
+  
+      var inputtednewLocation = $("input#new-location").val();
+      $(".the-location").text(inputtednewLocation);
+      grandTotal = grandTotal + deliver;
+      $(".delivery-total").text(grandTotal);
+  
+      $("#dtotal").hide();
+      $("#delivery-switch").hide();
+      $("#totalamount").show();
+      $("form#location").hide();
+      $("button#place").hide();
+      $("#pay").show();
+    });
+    //to reload page once done
+    $("button#restart").click(function () {
+      location.reload();
 
-      //Add an extra order
-      $(".view-three").hide();
-      $(".view-four").hide();
-      $(".view-two").show();
-      document.getElementById("form1").reset();
-  })
-
-  //Delivery button
-  $("#delivery").click(function() {
-      $(".table-buttons").hide();
-      $(".view-four").slideDown();
-  })
-})
+    });
+  });
